@@ -8,7 +8,7 @@ AS
 BEGIN
     IF(EXISTS(SELECT 1 FROM #ExpectException WHERE ExpectException = 1))
     BEGIN
-        -- we are deleting in order not to confuse test runner to throw wrong 
+        -- we are deleting in order not to confuse test runner to handle the exception inside #ExpectException table
         DELETE #ExpectException;
         THROW 50001, 'Each test can only contain one call to tSQL_test_synapse.ExpectException.', 101;
     END;

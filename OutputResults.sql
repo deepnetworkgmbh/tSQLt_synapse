@@ -10,11 +10,12 @@ BEGIN
     DECLARE @total_tests int;
     DECLARE @success_tests int;
     DECLARE @failure_tests int;
+    DECLARE @error_tests int;
     DECLARE @header NVARCHAR(MAX);
     DECLARE @errors NVARCHAR(MAX) = '';
     DECLARE @message NVARCHAR(MAX);
 
-    SELECT @total_tests = COUNT(*), @success_tests = ISNULL(SUM(CASE WHEN Result = 'success' THEN 1 ELSE 0 END), 0), @failure_tests = ISNULL(SUM(CASE WHEN Result = 'failure' THEN 1 ELSE 0 END), 0) FROM [tSQL_test_synapse].[TestInfo];
+    SELECT @total_tests = COUNT(*), @success_tests = ISNULL(SUM(CASE WHEN Result = 'success' THEN 1 ELSE 0 END), 0), @failure_tests = ISNULL(SUM(CASE WHEN Result = 'failure' THEN 1 ELSE 0 END), 0), @error_tests = ISNULL(SUM(CASE WHEN Result = 'error' THEN 1 ELSE 0 END), 0) FROM [tSQL_test_synapse].[TestInfo];
     SELECT @max_len_test_num = max(len(CAST(test_number AS NVARCHAR(100)))) over () FROM [tSQL_test_synapse].[TestInfo];
     SELECT @max_len_test_name = max(len(test_name)) over () FROM [tSQL_test_synapse].[TestInfo];
     SELECT @max_len_result = max(len(result)) over () FROM [tSQL_test_synapse].[TestInfo];
@@ -43,7 +44,7 @@ BEGIN
     PRINT REPLICATE('-', len(@header));
     PRINT @errors;
     PRINT '';
-    PRINT 'Test Case Summary: ' + CAST(@total_tests AS NVARCHAR(100)) + ' test case(s) executed, ' + CAST(@success_tests AS NVARCHAR(100)) + ' succeeded, ' + CAST(@failure_tests AS NVARCHAR(100)) + ' failed.';
+    PRINT 'Test Case Summary: ' + CAST(@total_tests AS NVARCHAR(100)) + ' test case(s) executed, ' + CAST(@success_tests AS NVARCHAR(100)) + ' succeeded, ' + CAST(@failure_tests AS NVARCHAR(100)) + ' failed, ' + CAST(@error_tests AS NVARCHAR(100)) + ' errored.';
     PRINT REPLICATE('-', len(@header));
 END;
 GO
