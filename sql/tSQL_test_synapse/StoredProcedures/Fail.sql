@@ -1,4 +1,4 @@
-CREATE PROCEDURE [tSQL_test_synapse].Fail
+CREATE PROCEDURE [tSQL_test_synapse].[Fail]
     @message NVARCHAR(MAX)
 AS
 BEGIN
