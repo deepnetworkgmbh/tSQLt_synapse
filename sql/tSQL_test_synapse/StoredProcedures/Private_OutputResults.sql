@@ -1,4 +1,4 @@
-CREATE PROCEDURE [tSQL_test_synapse].[OutputResults]
+CREATE PROCEDURE [tSQL_test_synapse].[Private_OutputResults]
 AS
 BEGIN
     DECLARE @test_name NVARCHAR(MAX);

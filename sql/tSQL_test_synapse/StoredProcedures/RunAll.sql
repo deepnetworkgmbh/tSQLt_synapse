@@ -187,9 +187,9 @@ BEGIN
                 SCHEMA_NAME([schema_id]) AS [SchemaName]
             INTO #AfterExecutionObjectSnapshot
             FROM [sys].[objects];
-            EXEC [tSQL_test_synapse].[AssertNoSideEffects]
+            EXEC [tSQL_test_synapse].[Private_AssertNoSideEffects]
                 '#BeforeExecutionObjectSnapshot', '#AfterExecutionObjectSnapshot', @test_name;
         END
 
-    EXEC [tSQL_test_synapse].[OutputResults];
+    EXEC [tSQL_test_synapse].[Private_OutputResults];
 END;

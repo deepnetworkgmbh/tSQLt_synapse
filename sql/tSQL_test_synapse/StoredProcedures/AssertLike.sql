@@ -17,7 +17,7 @@ BEGIN
         BEGIN
             SELECT
                 @message = 'Expected: <' + ISNULL(@expected_pattern, 'NULL') + '>'
-                + CHAR(13) + CHAR(10) + ' but was: <' + ISNULL(@actual, 'NULL') + '>';
+                + ' but was: <' + ISNULL(@actual, 'NULL') + '>';
             EXEC [tSQL_test_synapse].[Fail] @message;
         END
 END;

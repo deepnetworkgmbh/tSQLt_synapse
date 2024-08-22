@@ -1,4 +1,4 @@
-CREATE PROCEDURE [tSQL_test_synapse].[AssertNoSideEffects]
+CREATE PROCEDURE [tSQL_test_synapse].[Private_AssertNoSideEffects]
     @BeforeExecutionObjectSnapshotTableName NVARCHAR(MAX),
     @AfterExecutionObjectSnapshotTableName NVARCHAR(MAX),
     @test_name NVARCHAR(MAX)
