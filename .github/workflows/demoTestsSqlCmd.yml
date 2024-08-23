@@ -1,0 +1,79 @@
+# Creates and executes the sample tests by running the scripts under sql/UnitTests folder with sqlcmd. Then, deletes the created tests.
+name: demoTestsSqlCmd
+on:
+  push:
+    branches:
+      - modify-structure
+  pull_request:
+    branches:
+      - main
+
+env:
+  WORKING_DIRECTORY: demo/UnitTests
+
+jobs:
+  build:
+    name: Run Demo Sqlcmd Scripts
+    runs-on: [ubuntu-latest]
+    continue-on-error: false
+
+    steps:
+      # Checkout repository
+      - name: Check Out Repository
+        id: checkout_repository
+        uses: actions/checkout@v3
+
+      # Login to Azure
+      - name: Azure Login
+        id: azure_login
+        uses: azure/login@v1
+        with:
+          creds:  '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+
+      # Generate Azure Active Directory Token
+      - name: Generate Azure Active Directory Token
+        id: azure_access_token
+        run: |
+          echo "Create Azure Access Token"
+          ACCESS_TOKEN=$(az account get-access-token --scope "https://database.windows.net/.default" --query "accessToken" -o tsv)
+
+          echo "Set secret value"
+          echo "azureAccessToken=$ACCESS_TOKEN" >> "$GITHUB_OUTPUT"
+
+      # Install Sqlserver Module
+      - name: Install Sqlserver Module
+        id: install_sqlserver_module
+        run: |
+          Install-Module sqlserver -scope CurrentUser -force
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: pwsh
+
+      # Create and Execute Sample Tests
+      - name: Create and Execute Sample Tests
+        id: create_and_execute_sample_tests
+        run: |
+          Invoke-Sqlcmd `
+            -ServerInstance "${{ vars.TARGET_SERVER_URI }}" `
+            -Database "${{ vars.TARGET_DATABASE_NAME }}" `
+            -AccessToken "${{ steps.azure_access_token.outputs.azureAccessToken }}" `
+            -InputFile "SampleTests.sql"
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: pwsh
+
+      # Delete Sample Tests
+      - name: Delete Sample Tests
+        id: delete_sample_tests
+        run: |
+          Invoke-Sqlcmd `
+            -ServerInstance "${{ vars.TARGET_SERVER_URI }}" `
+            -Database "${{ vars.TARGET_DATABASE_NAME }}" `
+            -AccessToken "${{ steps.azure_access_token.outputs.azureAccessToken }}" `
+            -InputFile "DeleteSampleTests.sql"
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        shell: pwsh
+
+      # Log out from Azure
+      - name: Log out from Azure
+        id: azure_logout
+        run: |
+          az logout

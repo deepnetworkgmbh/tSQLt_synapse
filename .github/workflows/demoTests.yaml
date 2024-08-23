@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - modify-structure
+    paths: 
+      - "sql/**"
   pull_request:
     branches:
       - main
