@@ -354,5 +354,3 @@ GO
 -- Run the created tests
 EXEC [tSQL_test_synapse].[RunAll];
 GO
--- Check results from table
-SELECT * FROM [tSQL_test_synapse].[TestInfo];
