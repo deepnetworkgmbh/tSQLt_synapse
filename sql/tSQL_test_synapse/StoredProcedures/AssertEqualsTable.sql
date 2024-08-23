@@ -42,8 +42,8 @@ BEGIN
     END CATCH
 
     EXEC [tSQL_test_synapse].[Private_CompareTables]
-        @expected = @expected,
-        @actual = @actual,
+        @Expected = @expected,
+        @Actual = @actual,
         @ResultTable = @ResultTableWithSchema,
         @ColumnList = @ColumnList,
         @MatchIndicatorColumnName = @ResultColumn;
