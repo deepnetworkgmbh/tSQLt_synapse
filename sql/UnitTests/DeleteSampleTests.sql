@@ -62,4 +62,6 @@ DROP PROCEDURE [UnitTests].[test_assert_equals_table_success];
 
 DROP PROCEDURE [UnitTests].[test_assert_equals_table_fail];
 
+DROP PROCEDURE [UnitTests].[rollback_test_assert_equals_table_fail];
+
 DROP SCHEMA [UnitTests]
