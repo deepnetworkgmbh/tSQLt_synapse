@@ -3,7 +3,7 @@ GO
 
 -- AssertEqualsInt tests
 
-CREATE PROCEDURE [UnitTests].[test_not_equals_int_null]
+CREATE PROCEDURE [UnitTests].[test_assert_equals_int_null_fail]
 AS
 BEGIN
     DECLARE @a int = NULL;
@@ -13,7 +13,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [UnitTests].[test_not_equals_int]
+CREATE PROCEDURE [UnitTests].[test_assert_equals_int_fail]
 AS
 BEGIN
     DECLARE @a int = 1;
@@ -23,7 +23,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [UnitTests].[test_equals_int]
+CREATE PROCEDURE [UnitTests].[test_assert_equals_int_success]
 AS
 BEGIN
     DECLARE @a int = 5;
@@ -33,7 +33,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [UnitTests].[test_not_equals_bit]
+CREATE PROCEDURE [UnitTests].[test_assert_equals_bit_fail]
 AS
 BEGIN
     DECLARE @a bit = 0;
@@ -43,7 +43,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [UnitTests].[test_equals_bit]
+CREATE PROCEDURE [UnitTests].[test_assert_equals_bit_success]
 AS
 BEGIN
     DECLARE @a bit = 0;
@@ -55,7 +55,7 @@ GO
 
 -- AssertEqualsString tests
 
-CREATE PROCEDURE [UnitTests].[test_not_equals_string]
+CREATE PROCEDURE [UnitTests].[test_assert_equals_string_fail]
 AS
 BEGIN
     DECLARE @a nvarchar(3) = 'abc';
@@ -65,7 +65,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [UnitTests].[test_equals_string]
+CREATE PROCEDURE [UnitTests].[test_assert_equals_string_success]
 AS
 BEGIN
     DECLARE @a nvarchar(3) = 'abc';
@@ -273,6 +273,81 @@ BEGIN
     DECLARE @b nvarchar(3) = 'bcd';
     EXEC [tSQL_test_synapse].[AssertLike] @a, @b;
     --expected result: failure
+END;
+GO
+
+-- AssertEmptyTable tests
+
+CREATE PROCEDURE [UnitTests].[test_assert_empty_table_success]
+AS
+BEGIN
+    CREATE TABLE [tSQL_test_synapse].[empty] (
+    [c2] INT NOT NULL,
+    [c3] INT NOT NULL) WITH (DISTRIBUTION = REPLICATE);
+
+    EXEC [tSQL_test_synapse].[AssertEmptyTable] 'tSQL_test_synapse.empty';
+
+    DROP TABLE [tSQL_test_synapse].[empty];
+    --expected result: success
+END;
+GO
+
+CREATE PROCEDURE [UnitTests].[test_assert_empty_table_fail]
+AS
+BEGIN
+    EXEC [tSQL_test_synapse].[AssertEmptyTable] 'tSQL_test_synapse.TestInfo';
+    --expected result: failure
+END;
+GO
+
+-- AssertEqualsTable tests
+
+CREATE PROCEDURE [UnitTests].[test_assert_equals_table_success]
+AS
+BEGIN
+    CREATE TABLE [tSQL_test_synapse].[t1] (
+    [c2] INT NOT NULL,
+    [c3] INT NOT NULL) WITH (DISTRIBUTION = REPLICATE);
+    INSERT INTO [tSQL_test_synapse].[t1] VALUES (3,2);
+
+
+    CREATE TABLE [tSQL_test_synapse].[t2] (
+    [c2] INT NOT NULL,
+    [c3] INT NOT NULL) WITH (DISTRIBUTION = REPLICATE);
+    INSERT INTO [tSQL_test_synapse].[t2] VALUES (3,2);
+
+    EXEC [tSQL_test_synapse].[AssertEqualsTable] 'tSQL_test_synapse.t1', 'tSQL_test_synapse.t2';
+
+    DROP TABLE [tSQL_test_synapse].[t1];
+    DROP TABLE [tSQL_test_synapse].[t2];
+    --expected result: success
+END;
+GO
+
+CREATE PROCEDURE [UnitTests].[test_assert_equals_table_fail]
+AS
+BEGIN
+    CREATE TABLE [tSQL_test_synapse].[t1] (
+    [c2] INT NOT NULL,
+    [c3] INT NOT NULL) WITH (DISTRIBUTION = REPLICATE);
+    INSERT INTO [tSQL_test_synapse].[t1] VALUES (5,6);
+
+
+    CREATE TABLE [tSQL_test_synapse].[t2] (
+    [c2] INT NOT NULL,
+    [c3] INT NOT NULL) WITH (DISTRIBUTION = REPLICATE);
+    INSERT INTO [tSQL_test_synapse].[t2] VALUES (3,2);
+
+    EXEC [tSQL_test_synapse].[AssertEqualsTable] 'tSQL_test_synapse.t1', 'tSQL_test_synapse.t2';
+    --expected result: failure
+END;
+GO
+
+CREATE PROCEDURE [UnitTests].[rollback_test_assert_equals_table_fail]
+AS
+BEGIN
+    DROP TABLE [tSQL_test_synapse].[t1];
+    DROP TABLE [tSQL_test_synapse].[t2];
 END;
 GO
 

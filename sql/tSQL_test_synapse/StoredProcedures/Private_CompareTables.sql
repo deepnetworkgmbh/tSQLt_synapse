@@ -58,7 +58,7 @@ BEGIN
 
     IF @UnequalRowsExist > 0
         BEGIN
-            SET @Cmd = 'SELECT * FROM ' + @ResultTable + '; '
+            SET @Cmd = 'SELECT * FROM ' + @ResultTable + '; DROP TABLE ' + @ResultTable + ';'
             EXEC [sp_executesql] @Cmd;
             EXEC [tSQL_test_synapse].[Fail] 'There exists unequal rows!';
         END;

@@ -1,16 +1,16 @@
-DROP PROCEDURE [UnitTests].[test_not_equals_int_null];
+DROP PROCEDURE [UnitTests].[test_assert_equals_int_null_fail];
 
-DROP PROCEDURE [UnitTests].[test_not_equals_int];
+DROP PROCEDURE [UnitTests].[test_assert_equals_int_fail];
 
-DROP PROCEDURE [UnitTests].[test_equals_int];
+DROP PROCEDURE [UnitTests].[test_assert_equals_int_success];
 
-DROP PROCEDURE [UnitTests].[test_not_equals_string];
+DROP PROCEDURE [UnitTests].[test_assert_equals_string_fail];
 
-DROP PROCEDURE [UnitTests].[test_equals_string];
+DROP PROCEDURE [UnitTests].[test_assert_equals_string_success];
 
-DROP PROCEDURE [UnitTests].[test_not_equals_bit];
+DROP PROCEDURE [UnitTests].[test_assert_equals_bit_fail];
 
-DROP PROCEDURE [UnitTests].[test_equals_bit];
+DROP PROCEDURE [UnitTests].[test_assert_equals_bit_success];
 
 DROP PROCEDURE [UnitTests].[test_result_error];
 
@@ -53,5 +53,13 @@ DROP PROCEDURE [UnitTests].[test_assert_not_equals_string_fail];
 DROP PROCEDURE [UnitTests].[test_assert_like_success];
 
 DROP PROCEDURE [UnitTests].[test_assert_like_fail];
+
+DROP PROCEDURE [UnitTests].[test_assert_empty_table_success];
+
+DROP PROCEDURE [UnitTests].[test_assert_empty_table_fail];
+
+DROP PROCEDURE [UnitTests].[test_assert_equals_table_success];
+
+DROP PROCEDURE [UnitTests].[test_assert_equals_table_fail];
 
 DROP SCHEMA [UnitTests]

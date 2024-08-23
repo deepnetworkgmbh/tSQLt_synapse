@@ -20,12 +20,6 @@ BEGIN
     SELECT @ResultColumn = '_m_';
     SELECT @ResultTableWithSchema = 'tSQL_test_synapse.' + @ResultTable;
 
-    IF (OBJECT_ID(@ResultTableWithSchema) IS NOT NULL)
-        BEGIN
-            SET @Cmd = 'DROP TABLE ' + @ResultTableWithSchema;
-            EXEC [sp_executesql] @Cmd;
-        END
-
     SET @Cmd = '
      SELECT TOP(0) ''>'' AS ' + @ResultColumn + ', Expected.* INTO ' + @ResultTableWithSchema + ' 
        FROM ' + @expected + ' AS Expected RIGHT JOIN ' + @expected + ' AS X ON 1=0; '
@@ -53,4 +47,7 @@ BEGIN
         @ResultTable = @ResultTableWithSchema,
         @ColumnList = @ColumnList,
         @MatchIndicatorColumnName = @ResultColumn;
+
+    SET @Cmd = 'DROP TABLE ' + @ResultTableWithSchema;
+    EXEC [sp_executesql] @Cmd;
 END;
