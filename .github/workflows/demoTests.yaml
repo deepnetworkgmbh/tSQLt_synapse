@@ -9,7 +9,7 @@ on:
       - main
 
 env:
-  WORKING_DIRECTORY: sql/tSQL_test_synapse/tsqlTestSynapseProject
+  WORKING_DIRECTORY: sql
   PROJECT_NAME: tsqlTestSynapseProject
   BUILD_PATH: DatabaseRelease
 
