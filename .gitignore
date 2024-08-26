@@ -1,0 +1,4 @@
+.vscode
+sql/bin
+sql/obj
+.DS_Store

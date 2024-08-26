@@ -1,0 +1,81 @@
+# Builds and publishes the project under sql/tSQL_test_synapse/tsqlTestSynapseProject to demonstrate how to use the tsql synapse test.
+name: Deploy Test Project
+on:
+  push:
+    branches:
+      - main
+    paths: 
+      - "sql/tSQL_test_synapse/**"
+      - ".github/workflows/deployProject.yaml"
+
+env:
+  WORKING_DIRECTORY: sql
+  PROJECT_NAME: tsqlTestSynapseProject
+  BUILD_PATH: DatabaseRelease
+
+jobs:
+  build:
+    name: Build and Deploy Project
+    runs-on: [ubuntu-latest]
+    continue-on-error: false
+
+    steps:
+      # Checkout repository
+      - name: Check Out Repository
+        id: checkout_repository
+        uses: actions/checkout@v3
+
+      # Build Database project
+      - name: Build Database project
+        id: dotnet_build
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          export HOME=$(pwd -P)
+          dotnet build /p:NetCoreBuild=true --configuration Release --output ./${{ env.BUILD_PATH }}
+
+      # Login to Azure
+      - name: Azure Login
+        id: azure_login
+        uses: azure/login@v1
+        with:
+          creds:  '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+
+      # Generate Azure Active Directory Token
+      - name: Generate Azure Active Directory Token
+        id: azure_access_token
+        run: |
+          echo "Set Azure Context"
+          az account set -s "${{ secrets.SUBSCRIPTION_ID }}"
+
+          echo "Create Azure Access Token"
+          ACCESS_TOKEN=$(az account get-access-token --scope "https://database.windows.net/.default" --query "accessToken" -o tsv)
+
+          echo "Set secret value"
+          echo "azureAccessToken=$ACCESS_TOKEN" >> "$GITHUB_OUTPUT"
+
+      #Add sql package to path
+      - name: Add sqlpackage to PATH
+        run: |
+          echo "/home/actions/sqlpackage" >> $GITHUB_PATH
+
+      # SQL Package Deployment
+      - name: SQL Package Deployment
+        id: sqlpackage_deployment
+        run: |
+          sqlpackage /Action:Publish \
+          /SourceFile:"${{ env.BUILD_PATH }}/${{ env.PROJECT_NAME }}.dacpac" \
+          /TargetServerName:"${{ secrets.TARGET_SERVER_URI }}" \
+          /TargetDatabaseName:"${{ secrets.TARGET_DATABASE_NAME }}" \
+          /AccessToken:"${{ steps.azure_access_token.outputs.azureAccessToken }}" \
+          /Diagnostics:true \
+          /p:VerifyCollationCompatibility=true \
+          /p:VerifyDeployment=true \
+          /p:BlockOnPossibleDataLoss=true \
+          /p:DropObjectsNotInSource=false
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+      # Log out from Azure
+      - name: Log out from Azure
+        id: azure_logout
+        run: |
+          az logout
