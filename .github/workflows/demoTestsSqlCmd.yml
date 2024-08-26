@@ -55,7 +55,8 @@ jobs:
             -ServerInstance "${{ secrets.TARGET_SERVER_URI }}" `
             -Database "${{ secrets.TARGET_DATABASE_NAME }}" `
             -AccessToken "${{ steps.azure_access_token.outputs.azureAccessToken }}" `
-            -InputFile "SampleTests.sql"
+            -InputFile "SampleTests.sql" `
+            -Verbose
         working-directory: ${{ env.WORKING_DIRECTORY }}
         shell: pwsh
 
