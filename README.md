@@ -1,5 +1,6 @@
 # tSQL_test_synapse
 
+
 tSQL_test_synapse is a Synapse-specific unit testing framework. It was created by modifying the `tSQLt` framework to be compatible with Synapse. Currently, not all functionalities provided by tSQLt are covered in tSQL_test_synapse, but those that seem necessary may be added in the future. The supported functionalities are:
 - AssertEmptyTable
 - AssertEqualsInt 
