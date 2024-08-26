@@ -3,11 +3,10 @@ name: demoTestsSqlCmd
 on:
   push:
     branches:
-      - modify-structure
-  pull_request:
-    branches:
       - main
-
+    paths: 
+      - "demo/UnitTests/**"
+      - ".github/workflows/demoTestsSqlCmd.yaml"
 env:
   WORKING_DIRECTORY: demo/UnitTests
 
@@ -53,8 +52,8 @@ jobs:
         id: create_and_execute_sample_tests
         run: |
           Invoke-Sqlcmd `
-            -ServerInstance "${{ vars.TARGET_SERVER_URI }}" `
-            -Database "${{ vars.TARGET_DATABASE_NAME }}" `
+            -ServerInstance "${{ secrets.TARGET_SERVER_URI }}" `
+            -Database "${{ secrets.TARGET_DATABASE_NAME }}" `
             -AccessToken "${{ steps.azure_access_token.outputs.azureAccessToken }}" `
             -InputFile "SampleTests.sql"
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -65,8 +64,8 @@ jobs:
         id: delete_sample_tests
         run: |
           Invoke-Sqlcmd `
-            -ServerInstance "${{ vars.TARGET_SERVER_URI }}" `
-            -Database "${{ vars.TARGET_DATABASE_NAME }}" `
+            -ServerInstance "${{ secrets.TARGET_SERVER_URI }}" `
+            -Database "${{ secrets.TARGET_DATABASE_NAME }}" `
             -AccessToken "${{ steps.azure_access_token.outputs.azureAccessToken }}" `
             -InputFile "DeleteSampleTests.sql"
         working-directory: ${{ env.WORKING_DIRECTORY }}

@@ -1,14 +1,12 @@
-# Builds and publishes the demo project under sql/tSQL_test_synapse/tsqlTestSynapseProject to demonstrate how to use the tsql synapse test.
-name: Deploy Demo Test Project
+# Builds and publishes the project under sql/tSQL_test_synapse/tsqlTestSynapseProject to demonstrate how to use the tsql synapse test.
+name: Deploy Test Project
 on:
   push:
     branches:
-      - modify-structure
-    paths: 
-      - "sql/**"
-  pull_request:
-    branches:
       - main
+    paths: 
+      - "sql/tSQL_test_synapse/**"
+      - ".github/workflows/deployProject.yaml"
 
 env:
   WORKING_DIRECTORY: sql
@@ -17,7 +15,7 @@ env:
 
 jobs:
   build:
-    name: Build and Deploy Demo Project
+    name: Build and Deploy Project
     runs-on: [ubuntu-latest]
     continue-on-error: false
 
@@ -66,8 +64,8 @@ jobs:
         run: |
           sqlpackage /Action:Publish \
           /SourceFile:"${{ env.BUILD_PATH }}/${{ env.PROJECT_NAME }}.dacpac" \
-          /TargetServerName:"${{ vars.TARGET_SERVER_URI }}" \
-          /TargetDatabaseName:"${{ vars.TARGET_DATABASE_NAME }}" \
+          /TargetServerName:"${{ secrets.TARGET_SERVER_URI }}" \
+          /TargetDatabaseName:"${{ secrets.TARGET_DATABASE_NAME }}" \
           /AccessToken:"${{ steps.azure_access_token.outputs.azureAccessToken }}" \
           /Diagnostics:true \
           /p:VerifyCollationCompatibility=true \
