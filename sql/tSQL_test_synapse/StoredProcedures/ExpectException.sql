@@ -1,3 +1,4 @@
+-- Modified by Deep Network GmbH to make it compatible with Synapse 
 CREATE PROCEDURE [tSQL_test_synapse].[ExpectException]
     @ExpectedMessage NVARCHAR(MAX),
     @ExpectedSeverity INT,
@@ -6,6 +7,7 @@ CREATE PROCEDURE [tSQL_test_synapse].[ExpectException]
     @ExpectedErrorNumber INT
 AS
 BEGIN
+    -- The severity of exceptions coming from THROW statement are always 16
     IF (EXISTS (SELECT 1 FROM #ExpectException WHERE [ExpectException] = 1))
         BEGIN
         -- we are deleting in order not to confuse test runner to handle the exception inside #ExpectException table

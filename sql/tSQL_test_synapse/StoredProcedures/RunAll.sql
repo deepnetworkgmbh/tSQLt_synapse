@@ -1,3 +1,4 @@
+-- Modified by Deep Network GmbH to make it compatible with Synapse 
 CREATE PROCEDURE [tSQL_test_synapse].[RunAll]
 AS
 BEGIN
