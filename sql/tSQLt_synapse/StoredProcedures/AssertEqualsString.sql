@@ -1,5 +1,5 @@
 -- Modified by Deep Network GmbH to make it compatible with Synapse 
-CREATE PROCEDURE [tSQL_test_synapse].[AssertEqualsString]
+CREATE PROCEDURE [tSQLt_synapse].[AssertEqualsString]
     @expected NVARCHAR(MAX),
     @actual NVARCHAR(MAX)
 AS
@@ -14,6 +14,6 @@ BEGIN
             SELECT
                 @Msg = 'Expected: <' + ISNULL(@Expected, 'NULL')
                 + '> but was: <' + ISNULL(@Actual, 'NULL') + '>';
-            EXEC [tSQL_test_synapse].[Fail] @Msg;
+            EXEC [tSQLt_synapse].[Fail] @Msg;
         END
 END;

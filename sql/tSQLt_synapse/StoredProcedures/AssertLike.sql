@@ -1,5 +1,5 @@
 -- Modified by Deep Network GmbH to make it compatible with Synapse 
-CREATE PROCEDURE [tSQL_test_synapse].[AssertLike]
+CREATE PROCEDURE [tSQLt_synapse].[AssertLike]
     @expected_pattern NVARCHAR(MAX),
     @actual NVARCHAR(MAX)
 AS
@@ -19,6 +19,6 @@ BEGIN
             SELECT
                 @message = 'Expected: <' + ISNULL(@expected_pattern, 'NULL') + '>'
                 + ' but was: <' + ISNULL(@actual, 'NULL') + '>';
-            EXEC [tSQL_test_synapse].[Fail] @message;
+            EXEC [tSQLt_synapse].[Fail] @message;
         END
 END;

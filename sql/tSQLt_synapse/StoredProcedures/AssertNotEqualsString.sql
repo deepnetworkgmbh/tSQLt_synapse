@@ -1,4 +1,4 @@
-CREATE PROCEDURE [tSQL_test_synapse].[AssertNotEqualsString]
+CREATE PROCEDURE [tSQLt_synapse].[AssertNotEqualsString]
     @expected NVARCHAR(MAX),
     @actual NVARCHAR(MAX)
 AS
@@ -13,6 +13,6 @@ BEGIN
                 @Msg = 'Expected actual value to not '
                 + COALESCE('equal <' + @expected + '>', 'be NULL')
                 + '.';
-            EXEC [tSQL_test_synapse].[Fail] @Msg;
+            EXEC [tSQLt_synapse].[Fail] @Msg;
         END
 END;

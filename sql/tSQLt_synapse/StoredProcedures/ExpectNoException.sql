@@ -1,5 +1,5 @@
 -- Modified by Deep Network GmbH to make it compatible with Synapse
-CREATE PROCEDURE [tSQL_test_synapse].[ExpectNoException]
+CREATE PROCEDURE [tSQLt_synapse].[ExpectNoException]
     @Message NVARCHAR(MAX)
 AS
 BEGIN
@@ -12,7 +12,7 @@ BEGIN
         BEGIN
             DELETE #ExpectException;
             THROW 50001,
-            'tSQL_test_synapse.ExpectNoException cannot follow tSQL_test_synapse.ExpectException inside a single test.',
+            'tSQLt_synapse.ExpectNoException cannot follow tSQLt_synapse.ExpectException inside a single test.',
             101;
         END;
 

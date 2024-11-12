@@ -1,10 +1,10 @@
 -- Modified by Deep Network GmbH to make it compatible with Synapse 
-CREATE PROCEDURE [tSQL_test_synapse].[RunAll]
+CREATE PROCEDURE [tSQLt_synapse].[RunAll]
 AS
 BEGIN
-    TRUNCATE TABLE [tSQL_test_synapse].[TestInfo];
+    TRUNCATE TABLE [tSQLt_synapse].[TestInfo];
 
-    INSERT INTO [tSQL_test_synapse].[TestInfo] ([test_name], [test_number], [object_id], [test_rollback_name])
+    INSERT INTO [tSQLt_synapse].[TestInfo] ([test_name], [test_number], [object_id], [test_rollback_name])
     SELECT
         [s2].[name],
         ROW_NUMBER() OVER (ORDER BY [s2].[object_id]),
@@ -34,7 +34,7 @@ BEGIN
     DECLARE @message nvarchar(MAX) = NULL;
     DECLARE @tmp_message nvarchar(MAX);
 
-    SELECT @total_tests = COUNT(*) FROM [tSQL_test_synapse].[TestInfo];
+    SELECT @total_tests = COUNT(*) FROM [tSQLt_synapse].[TestInfo];
 
     IF (OBJECT_ID('tempdb..#ExpectException') IS NOT NULL)
         DROP TABLE #ExpectException;
@@ -53,7 +53,7 @@ BEGIN
             SELECT
                 @test_name = [test_name],
                 @rollback_name = [test_rollback_name]
-            FROM [tSQL_test_synapse].[TestInfo]
+            FROM [tSQLt_synapse].[TestInfo]
             WHERE [test_number] = @completed_tests;
             SET @execute_stmt = N'EXEC UnitTests.[' + @test_name + ']';
             TRUNCATE TABLE #ExpectException;
@@ -75,14 +75,14 @@ BEGIN
                         SET
                             @tmp_message = COALESCE((SELECT [FailMessage] FROM #ExpectException) + ' ', '')
                             + 'Expected an error to be raised.';
-                        EXEC [tSQL_test_synapse].[Fail] @tmp_message;
+                        EXEC [tSQLt_synapse].[Fail] @tmp_message;
                     END
                 SET @test_end_time = SYSDATETIME();
                 SET @result = 'success'
             END TRY
             BEGIN CATCH
                 SET @test_end_time = SYSDATETIME();
-                IF (ERROR_MESSAGE() LIKE '%tSQL_test_synapse.Failure%') --assertion fail
+                IF (ERROR_MESSAGE() LIKE '%tSQLt_synapse.Failure%') --assertion fail
                     BEGIN
                         SET @result = 'failure';
                         SET @message = ERROR_MESSAGE();
@@ -171,7 +171,7 @@ BEGIN
                 END CATCH
             ELSE
                 SET @rollback_result = NULL;
-            UPDATE [tSQL_test_synapse].[TestInfo] SET
+            UPDATE [tSQLt_synapse].[TestInfo] SET
                 [result] = @result,
                 [test_start_time] = @test_start_time,
                 [test_end_time] = @test_end_time,
@@ -188,9 +188,9 @@ BEGIN
                 SCHEMA_NAME([schema_id]) AS [SchemaName]
             INTO #AfterExecutionObjectSnapshot
             FROM [sys].[objects];
-            EXEC [tSQL_test_synapse].[Private_AssertNoSideEffects]
+            EXEC [tSQLt_synapse].[Private_AssertNoSideEffects]
                 '#BeforeExecutionObjectSnapshot', '#AfterExecutionObjectSnapshot', @test_name;
         END
 
-    EXEC [tSQL_test_synapse].[Private_OutputResults];
+    EXEC [tSQLt_synapse].[Private_OutputResults];
 END;
