@@ -5,12 +5,12 @@ on:
     branches:
       - main
     paths: 
-      - "sql/tSQL_test_synapse/**"
+      - "sql/tSQLt_synapse/**"
       - ".github/workflows/deployProject.yaml"
 
 env:
   WORKING_DIRECTORY: sql
-  PROJECT_NAME: tsqlTestSynapseProject
+  PROJECT_NAME: tsqltSynapse
   BUILD_PATH: DatabaseRelease
 
 jobs:
