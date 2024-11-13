@@ -1,9 +1,9 @@
 -- Modified by Deep Network GmbH to make it compatible with Synapse 
-CREATE PROCEDURE [tSQL_test_synapse].[AssertEmptyTable]
+CREATE PROCEDURE [tSQLt_synapse].[AssertEmptyTable]
     @table_name NVARCHAR(MAX)
 AS
 BEGIN
-    EXEC [tSQL_test_synapse].[AssertObjectExists] @table_name;
+    EXEC [tSQLt_synapse].[AssertObjectExists] @table_name;
 
     DECLARE @full_name NVARCHAR(MAX);
     IF (OBJECT_ID(@table_name) IS NULL AND OBJECT_ID('tempdb..' + @table_name) IS NOT NULL)
@@ -26,6 +26,6 @@ BEGIN
             EXEC [sp_executesql] @cmd;
             DECLARE @message NVARCHAR(MAX);
             SET @message = @full_name + ' was not empty';
-            EXEC [tSQL_test_synapse].[Fail] @message;
+            EXEC [tSQLt_synapse].[Fail] @message;
         END
 END

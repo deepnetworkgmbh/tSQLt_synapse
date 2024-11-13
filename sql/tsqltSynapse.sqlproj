@@ -2,7 +2,7 @@
 <Project DefaultTargets="Build">
   <Sdk Name="Microsoft.Build.Sql" Version="0.1.12-preview" />
   <PropertyGroup>
-    <Name>tsqlTestSynapseProject</Name>
+    <Name>tsqltSynapse</Name>
     <ProjectGuid>{613E988E-572D-44FB-97B1-25E15F299674}</ProjectGuid>
     <DSP>Microsoft.Data.Tools.Schema.Sql.SqlDwDatabaseSchemaProvider</DSP>
     <ModelCollation>1033, CI</ModelCollation>
@@ -18,7 +18,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="tSQL_test_synapse" />
+    <Folder Include="tSQLt_synapse" />
   </ItemGroup>
   <Target Name="BeforeBuild">
     <Delete Files="$(BaseIntermediateOutputPath)\project.assets.json" />

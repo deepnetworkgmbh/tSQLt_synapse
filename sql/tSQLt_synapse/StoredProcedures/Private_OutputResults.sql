@@ -1,4 +1,4 @@
-CREATE PROCEDURE [tSQL_test_synapse].[Private_OutputResults]
+CREATE PROCEDURE [tSQLt_synapse].[Private_OutputResults]
 AS
 BEGIN
     DECLARE @test_name NVARCHAR(MAX);
@@ -20,13 +20,13 @@ BEGIN
         @success_tests = ISNULL(SUM(CASE WHEN [result] = 'success' THEN 1 ELSE 0 END), 0),
         @failure_tests = ISNULL(SUM(CASE WHEN [result] = 'failure' THEN 1 ELSE 0 END), 0),
         @error_tests = ISNULL(SUM(CASE WHEN [result] = 'error' THEN 1 ELSE 0 END), 0)
-    FROM [tSQL_test_synapse].[TestInfo];
+    FROM [tSQLt_synapse].[TestInfo];
 
     SELECT @max_len_test_num = MAX(LEN(CAST([test_number] AS NVARCHAR(100)))) OVER ()
-    FROM [tSQL_test_synapse].[TestInfo];
+    FROM [tSQLt_synapse].[TestInfo];
 
-    SELECT @max_len_test_name = MAX(LEN([test_name])) OVER () FROM [tSQL_test_synapse].[TestInfo];
-    SELECT @max_len_result = MAX(LEN([result])) OVER () FROM [tSQL_test_synapse].[TestInfo];
+    SELECT @max_len_test_name = MAX(LEN([test_name])) OVER () FROM [tSQLt_synapse].[TestInfo];
+    SELECT @max_len_result = MAX(LEN([result])) OVER () FROM [tSQLt_synapse].[TestInfo];
 
     IF (LEN('No') > @max_len_test_num)
         SET @max_len_test_num = LEN('No')
@@ -55,7 +55,7 @@ BEGIN
                 @test_name = [test_name],
                 @result = [result],
                 @message = [result_message]
-            FROM [tSQL_test_synapse].[TestInfo]
+            FROM [tSQLt_synapse].[TestInfo]
             WHERE [test_number] = @completed_tests;
             PRINT '| '
             + CAST(@completed_tests AS NVARCHAR(100))

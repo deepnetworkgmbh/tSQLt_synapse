@@ -1,5 +1,5 @@
 -- Modified by Deep Network GmbH to make it compatible with Synapse 
-CREATE PROCEDURE [tSQL_test_synapse].[ExpectException]
+CREATE PROCEDURE [tSQLt_synapse].[ExpectException]
     @ExpectedMessage NVARCHAR(MAX),
     @ExpectedSeverity INT,
     @ExpectedState INT,
@@ -12,7 +12,7 @@ BEGIN
         BEGIN
         -- we are deleting in order not to confuse test runner to handle the exception inside #ExpectException table
             DELETE #ExpectException;
-            THROW 50001, 'Each test can only contain one call to tSQL_test_synapse.ExpectException.', 101;
+            THROW 50001, 'Each test can only contain one call to tSQLt_synapse.ExpectException.', 101;
         END;
 
     INSERT INTO #ExpectException (

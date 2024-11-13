@@ -1,4 +1,4 @@
-CREATE TABLE [tSQL_test_synapse].[TestInfo] (
+CREATE TABLE [tSQLt_synapse].[TestInfo] (
     [test_name] NVARCHAR(2048) NOT NULL,
     [test_number] INT NOT NULL,
     [object_id] INT NOT NULL,

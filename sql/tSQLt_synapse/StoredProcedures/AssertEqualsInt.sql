@@ -1,4 +1,4 @@
-CREATE PROCEDURE [tSQL_test_synapse].[AssertEqualsInt]
+CREATE PROCEDURE [tSQLt_synapse].[AssertEqualsInt]
     @expected int,
     @actual int
 AS
@@ -13,6 +13,6 @@ BEGIN
             SELECT
                 @Msg = 'Expected: <' + ISNULL(CAST(@Expected AS nvarchar(MAX)), 'NULL')
                 + '> but was: <' + ISNULL(CAST(@Actual AS nvarchar(MAX)), 'NULL') + '>';
-            EXEC [tSQL_test_synapse].[Fail] @Msg;
+            EXEC [tSQLt_synapse].[Fail] @Msg;
         END
 END;

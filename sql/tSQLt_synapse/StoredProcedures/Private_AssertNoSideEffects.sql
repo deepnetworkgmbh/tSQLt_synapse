@@ -1,5 +1,5 @@
 -- Modified by Deep Network GmbH to make it compatible with Synapse 
-CREATE PROCEDURE [tSQL_test_synapse].[Private_AssertNoSideEffects]
+CREATE PROCEDURE [tSQLt_synapse].[Private_AssertNoSideEffects]
     @BeforeExecutionObjectSnapshotTableName NVARCHAR(MAX),
     @AfterExecutionObjectSnapshotTableName NVARCHAR(MAX),
     @test_name NVARCHAR(MAX)

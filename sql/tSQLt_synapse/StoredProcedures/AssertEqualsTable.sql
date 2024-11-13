@@ -1,12 +1,12 @@
 -- Modified by Deep Network GmbH to make it compatible with Synapse 
-CREATE PROCEDURE [tSQL_test_synapse].[AssertEqualsTable]
+CREATE PROCEDURE [tSQLt_synapse].[AssertEqualsTable]
     @expected NVARCHAR(MAX),
     @actual NVARCHAR(MAX)
 AS
 BEGIN
 
-    EXEC [tSQL_test_synapse].[AssertObjectExists] @expected;
-    EXEC [tSQL_test_synapse].[AssertObjectExists] @actual;
+    EXEC [tSQLt_synapse].[AssertObjectExists] @expected;
+    EXEC [tSQLt_synapse].[AssertObjectExists] @actual;
 
     DECLARE @ResultTable NVARCHAR(MAX);
     DECLARE @ResultTableWithSchema NVARCHAR(MAX);
@@ -19,7 +19,7 @@ BEGIN
 
     SELECT @ResultTable = 'result_table';
     SELECT @ResultColumn = '_m_';
-    SELECT @ResultTableWithSchema = 'tSQL_test_synapse.' + @ResultTable;
+    SELECT @ResultTableWithSchema = 'tSQLt_synapse.' + @ResultTable;
 
     SET @Cmd = '
      SELECT TOP(0) ''>'' AS ' + @ResultColumn + ', Expected.* INTO ' + @ResultTableWithSchema + ' 
@@ -42,7 +42,7 @@ BEGIN
         THROW 50003, 'The table contains a datatype that is not supported for tSQLt.AssertEqualsTable', 103;
     END CATCH
 
-    EXEC [tSQL_test_synapse].[Private_CompareTables]
+    EXEC [tSQLt_synapse].[Private_CompareTables]
         @Expected = @expected,
         @Actual = @actual,
         @ResultTable = @ResultTableWithSchema,

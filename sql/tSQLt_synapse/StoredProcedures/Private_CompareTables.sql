@@ -1,5 +1,5 @@
 -- Modified by Deep Network GmbH to make it compatible with Synapse 
-CREATE PROCEDURE [tSQL_test_synapse].[Private_CompareTables]
+CREATE PROCEDURE [tSQLt_synapse].[Private_CompareTables]
     @Expected NVARCHAR(MAX),
     @Actual NVARCHAR(MAX),
     @ResultTable NVARCHAR(MAX),
@@ -61,6 +61,6 @@ BEGIN
         BEGIN
             SET @Cmd = 'SELECT * FROM ' + @ResultTable + '; DROP TABLE ' + @ResultTable + ';'
             EXEC [sp_executesql] @Cmd;
-            EXEC [tSQL_test_synapse].[Fail] 'There exists unequal rows!';
+            EXEC [tSQLt_synapse].[Fail] 'There exists unequal rows!';
         END;
 END;
