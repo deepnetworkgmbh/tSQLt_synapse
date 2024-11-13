@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - fix-naming-in-workflows
     paths: 
       - "sql/tSQLt_synapse/**"
       - ".github/workflows/deployProject.yaml"
