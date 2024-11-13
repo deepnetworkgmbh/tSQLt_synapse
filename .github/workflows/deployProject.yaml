@@ -1,4 +1,4 @@
-# Builds and publishes the project under sql/tSQL_test_synapse/tsqlTestSynapseProject to demonstrate how to use the tsql synapse test.
+# Builds and publishes the project sql/tSQLt_synapse/tsqltSynapse.sqlproj to demonstrate how to use the tsql synapse test.
 name: Deploy Test Project
 on:
   push:
