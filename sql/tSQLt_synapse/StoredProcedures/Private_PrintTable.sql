@@ -94,12 +94,12 @@ BEGIN
 
     PRINT REPLICATE('-', LEN(@ColumnList));
 
-    DECLARE @Command NVARCHAR(MAX) = N'
+    SET @Command = N'
         DECLARE @Output NVARCHAR(MAX);
         SELECT @Output = STRING_AGG(RowText, CHAR(10))
         FROM (
             SELECT CONCAT_WS('','', ' + @ColumnCastList + ') AS RowText
-            FROM ' + @table_name_with_schema + '
+            FROM ' + @SchemaName + '].[' + @TableName + ']
         ) t;
         PRINT @Output;';
 
