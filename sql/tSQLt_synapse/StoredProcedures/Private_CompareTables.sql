@@ -3,18 +3,20 @@ CREATE PROCEDURE [tSQLt_synapse].[Private_CompareTables]
     @Expected NVARCHAR(MAX),
     @Actual NVARCHAR(MAX),
     @ResultTable NVARCHAR(MAX),
+    @ResultTableSchema NVARCHAR(MAX),
     @ColumnList NVARCHAR(MAX),
     @MatchIndicatorColumnName NVARCHAR(MAX)
 AS
 BEGIN
     DECLARE @cmd NVARCHAR(MAX);
+    DECLARE @ResultTableWithSchema VARCHAR(MAX) = @ResultTableSchema + '.' + @ResultTable;
     DECLARE @RestoredRowIndexCounterColName NVARCHAR(MAX);
     SET @RestoredRowIndexCounterColName = @MatchIndicatorColumnName + '_RR';
 
     SELECT
         @cmd
         = '
-    INSERT INTO ' + @ResultTable + ' (' + @MatchIndicatorColumnName + ', ' + @ColumnList + ') 
+    INSERT INTO ' + @ResultTableWithSchema + ' (' + @MatchIndicatorColumnName + ', ' + @ColumnList + ') 
     SELECT 
       CASE 
         WHEN RestoredRowIndex.' + @RestoredRowIndexCounterColName + ' <= CASE WHEN [_{Left}_]<[_{Right}_] THEN [_{Left}_] ELSE [_{Right}_] END
@@ -50,7 +52,7 @@ BEGIN
         @cmd = 'SET @r = 
          CASE WHEN EXISTS(
                   SELECT 1 
-                    FROM ' + @ResultTable
+                    FROM ' + @ResultTableWithSchema
         + ' WHERE ' + @MatchIndicatorColumnName + ' IN (''<'', ''>'')) 
               THEN 1 ELSE 0 
          END';
@@ -59,7 +61,8 @@ BEGIN
 
     IF @UnequalRowsExist > 0
         BEGIN
-            SET @Cmd = 'SELECT * FROM ' + @ResultTable + '; DROP TABLE ' + @ResultTable + ';'
+            EXEC [tSQLt_synapse].[Private_PrintTable] @ResultTableSchema, @ResultTable;
+            SET @Cmd = 'DROP TABLE ' + @ResultTableWithSchema + ';'
             EXEC [sp_executesql] @Cmd;
             EXEC [tSQLt_synapse].[Fail] 'There exists unequal rows!';
         END;

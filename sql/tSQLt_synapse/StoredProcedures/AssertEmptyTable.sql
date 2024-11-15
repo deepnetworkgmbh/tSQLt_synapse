@@ -22,8 +22,7 @@ BEGIN
 
     IF (@exists = 1)
         BEGIN
-            SET @cmd = 'SELECT * FROM ' + @full_name + ';'
-            EXEC [sp_executesql] @cmd;
+            EXEC [tSQLt_synapse].[Private_PrintTable] OBJECT_SCHEMA_NAME(OBJECT_ID(@table_name)), OBJECT_NAME(OBJECT_ID(@table_name));
             DECLARE @message NVARCHAR(MAX);
             SET @message = @full_name + ' was not empty';
             EXEC [tSQLt_synapse].[Fail] @message;

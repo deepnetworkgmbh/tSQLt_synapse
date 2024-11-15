@@ -45,7 +45,8 @@ BEGIN
     EXEC [tSQLt_synapse].[Private_CompareTables]
         @Expected = @expected,
         @Actual = @actual,
-        @ResultTable = @ResultTableWithSchema,
+        @ResultTable = @ResultTable,
+        @ResultTableSchema = 'tSQLt_synapse',
         @ColumnList = @ColumnList,
         @MatchIndicatorColumnName = @ResultColumn;
 
