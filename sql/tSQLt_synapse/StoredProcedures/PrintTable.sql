@@ -19,15 +19,15 @@ BEGIN
 
     IF OBJECT_ID('tempdb..#column_max_len') IS NOT NULL
         DROP TABLE #column_max_len;
-    CREATE TABLE #column_max_len ([column_name] NVARCHAR(4000), [max_len] INT, [column_id] INT)
+    CREATE TABLE #column_max_len ([column_name] NVARCHAR(4000), [max_len] INT, [column_id] INT);
 
     DECLARE
-        @Column VARCHAR(50),
+        @Column VARCHAR(500),
         @MaxLength INT,
-        @MaxLengthString VARCHAR(10),
+        @MaxLengthString VARCHAR(100),
         @ColumnID INT,
         @MaxColumnID INT,
-        @Command VARCHAR(2000)
+        @Command VARCHAR(2000);
 
     SELECT
         @ColumnID = MIN([b].[column_id]),
@@ -36,11 +36,11 @@ BEGIN
     INNER JOIN [sys].[columns] AS [b] ON [a].[object_id] = [b].[object_id]
     WHERE
         [a].[name] = @TableName
-        AND SCHEMA_NAME([a].[schema_id]) = @SchemaName
+        AND SCHEMA_NAME([a].[schema_id]) = @SchemaName;
 
     WHILE (@ColumnID <= @MaxColumnID)
         BEGIN
-            SET @Column = NULL
+            SET @Column = NULL;
 
             SELECT @Column = [b].[name]
             FROM [sys].[tables] AS [a]
@@ -48,19 +48,20 @@ BEGIN
             WHERE
                 [a].[name] = @TableName
                 AND SCHEMA_NAME([a].[schema_id]) = @SchemaName
-                AND [b].[column_id] = @ColumnID
+                AND [b].[column_id] = @ColumnID;
 
             IF (@Column IS NOT NULL)
                 BEGIN
-                    SET @Command = 'INSERT INTO #column_max_len(column_name, max_len, column_id) 
-                SELECT ''' + @Column + '''
-                ,MAX(LEN(CAST([' + @Column + '] as VARCHAR(8000))))
-                ,' + CAST(@ColumnID AS NVARCHAR(MAX)) + '
-                FROM [' + @SchemaName + '].[' + @TableName + '] 
-                WHERE [' + @Column + '] IS NOT NULL'
-                    EXEC (@Command)
+                    SET @Command = N'
+                        INSERT INTO #column_max_len(column_name, max_len, column_id) 
+                        SELECT ''' + @Column + '''
+                        ,MAX(LEN(CAST([' + @Column + '] as VARCHAR(8000))))
+                        ,' + CAST(@ColumnID AS NVARCHAR(MAX)) + '
+                        FROM [' + @SchemaName + '].[' + @TableName + '] 
+                        WHERE [' + @Column + '] IS NOT NULL';
+                    EXEC (@Command);
                 END
-            SET @ColumnID = @ColumnID + 1
+            SET @ColumnID = @ColumnID + 1;
         END
 
     DECLARE @ColumnList NVARCHAR(MAX) = '';
@@ -70,7 +71,7 @@ BEGIN
             + SPACE(GREATEST([max_len], LEN(QUOTENAME([column_name]))) - LEN(QUOTENAME([column_name]))),
             ' '
         ) WITHIN GROUP (ORDER BY [column_id] ASC)
-    FROM #column_max_len
+    FROM #column_max_len;
 
     -- Print column headers
     PRINT @ColumnList;
@@ -89,18 +90,18 @@ BEGIN
             + '))',
             ', '
         ) WITHIN GROUP (ORDER BY [column_id] ASC)
-    FROM #column_max_len
+    FROM #column_max_len;
 
     PRINT REPLICATE('-', LEN(@ColumnList));
 
     DECLARE @Command NVARCHAR(MAX) = N'
-    DECLARE @Output NVARCHAR(MAX);
-    SELECT @Output = STRING_AGG(RowText, CHAR(10))
-    FROM (
-        SELECT CONCAT_WS('','', ' + @ColumnCastList + ') AS RowText
-        FROM ' + @table_name_with_schema + '
-    ) t;
-    PRINT @Output;'
+        DECLARE @Output NVARCHAR(MAX);
+        SELECT @Output = STRING_AGG(RowText, CHAR(10))
+        FROM (
+            SELECT CONCAT_WS('','', ' + @ColumnCastList + ') AS RowText
+            FROM ' + @table_name_with_schema + '
+        ) t;
+        PRINT @Output;';
 
     -- Execute the dynamic SQL
     EXEC [sp_executesql] @Command;
