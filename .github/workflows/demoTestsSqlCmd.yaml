@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feature/change-select-statements-to-print
     paths: 
       - "demo/UnitTests/**"
       - ".github/workflows/demoTestsSqlCmd.yaml"
