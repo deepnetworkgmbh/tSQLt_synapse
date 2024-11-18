@@ -66,7 +66,7 @@ BEGIN
             SELECT
                 @ColumnList = STRING_AGG(
                     QUOTENAME([column_name])
-                    + SPACE(GREATEST([max_len], LEN(QUOTENAME([column_name]))) - LEN(QUOTENAME([column_name]))),
+                    + SPACE(GREATEST([max_len], LEN(QUOTENAME([column_name]))) - LEN(QUOTENAME([column_name])) + 1),
                     ' '
                 ) WITHIN GROUP (ORDER BY [column_id] ASC)
             FROM #column_max_len;
@@ -81,12 +81,12 @@ BEGIN
                     'CAST(' + QUOTENAME([column_name])
                     + ' AS NVARCHAR(MAX)) + SPACE(GREATEST('
                     + CAST([max_len] AS NVARCHAR(MAX))
-                    + ',LEN('
+                    + ',LEN(QUOTENAME('''
                     + [column_name]
-                    + ')) - LEN('
+                    + '''))) - LEN('
                     + [column_name]
                     + '))',
-                    ', '
+                    ','
                 ) WITHIN GROUP (ORDER BY [column_id] ASC)
             FROM #column_max_len;
 
@@ -96,13 +96,12 @@ BEGIN
             DECLARE @Output NVARCHAR(MAX);
             SELECT @Output = STRING_AGG(RowText, CHAR(10))
             FROM (
-                SELECT CONCAT_WS('','', ' + @ColumnCastList + ') AS RowText
+                SELECT CONCAT_WS('', '', ' + @ColumnCastList + ') AS RowText
                 FROM [' + @SchemaName + '].[' + @TableName + ']
             ) t;
             PRINT @Output;';
 
             -- Execute the dynamic SQL
             EXEC [sp_executesql] @Command;
-            PRINT @Command
         END
 END;
