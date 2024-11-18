@@ -97,7 +97,7 @@ BEGIN
             SELECT @Output = STRING_AGG(RowText, CHAR(10))
             FROM (
                 SELECT CONCAT_WS('','', ' + @ColumnCastList + ') AS RowText
-                FROM ' + @SchemaName + '].[' + @TableName + ']
+                FROM [' + @SchemaName + '].[' + @TableName + ']
             ) t;
             PRINT @Output;';
 
