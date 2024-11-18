@@ -29,9 +29,11 @@ BEGIN
                 END
             ELSE
                 BEGIN
+                    PRINT 'EXECUTING AssertEmptyTable'
                     DECLARE @table_name_without_schema NVARCHAR(MAX) = OBJECT_NAME(OBJECT_ID(@table_name));
                     DECLARE @schema_name NVARCHAR(MAX) = OBJECT_NAME(OBJECT_ID(@table_name));
                     EXEC [tSQLt_synapse].[Private_PrintTable] @schema_name, @table_name_without_schema;
+                    PRINT 'Finished printing table'
                 END
             DECLARE @message NVARCHAR(MAX);
             SET @message = @full_name + ' was not empty';
