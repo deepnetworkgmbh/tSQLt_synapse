@@ -103,5 +103,6 @@ BEGIN
 
             -- Execute the dynamic SQL
             EXEC [sp_executesql] @Command;
+            PRINT @Command
         END
 END;
