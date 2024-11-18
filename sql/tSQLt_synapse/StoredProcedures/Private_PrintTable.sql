@@ -25,7 +25,7 @@ BEGIN
                 @MaxLengthString VARCHAR(100),
                 @ColumnID INT,
                 @MaxColumnID INT,
-                @Command VARCHAR(2000);
+                @Command NVARCHAR(2000);
 
             SELECT
                 @ColumnID = MIN([b].[column_id]),
