@@ -1,4 +1,4 @@
-ALTER PROCEDURE [tSQLt_synapse].[Private_PrintTable]
+CREATE PROCEDURE [tSQLt_synapse].[Private_PrintTable]
     @SchemaName NVARCHAR(MAX),
     @TableName NVARCHAR(MAX)
 AS
@@ -74,7 +74,7 @@ BEGIN
             -- Print column headers
             PRINT @ColumnList;
 
-            -- Create tbl list of columns cast to NVARCHAR(MAX)
+            -- Create a list of columns cast to NVARCHAR(MAX)
             DECLARE @ColumnCastList NVARCHAR(MAX) = '';
             SELECT
                 @ColumnCastList = STRING_AGG(
