@@ -1,4 +1,4 @@
-CREATE PROCEDURE [tSQLt_synapse].[Private_PrintTable]
+ALTER PROCEDURE [tSQLt_synapse].[Private_PrintTable]
     @SchemaName NVARCHAR(MAX),
     @TableName NVARCHAR(MAX)
 AS
@@ -28,25 +28,25 @@ BEGIN
                 @Command NVARCHAR(2000);
 
             SELECT
-                @ColumnID = MIN([b].[column_id]),
-                @MaxColumnID = MAX([b].[column_id])
-            FROM [sys].[tables] AS [a]
-            INNER JOIN [sys].[columns] AS [b] ON [a].[object_id] = [b].[object_id]
+                @ColumnID = MIN([clm].[column_id]),
+                @MaxColumnID = MAX([clm].[column_id])
+            FROM [sys].[tables] AS [tbl]
+            INNER JOIN [sys].[columns] AS [clm] ON [tbl].[object_id] = [clm].[object_id]
             WHERE
-                [a].[name] = @TableName
-                AND SCHEMA_NAME([a].[schema_id]) = @SchemaName;
+                [tbl].[name] = @TableName
+                AND SCHEMA_NAME([tbl].[schema_id]) = @SchemaName;
 
             WHILE (@ColumnID <= @MaxColumnID)
                 BEGIN
                     SET @Column = NULL;
 
-                    SELECT @Column = [b].[name]
-                    FROM [sys].[tables] AS [a]
-                    INNER JOIN [sys].[columns] AS [b] ON [a].[object_id] = [b].[object_id]
+                    SELECT @Column = [clm].[name]
+                    FROM [sys].[tables] AS [tbl]
+                    INNER JOIN [sys].[columns] AS [clm] ON [tbl].[object_id] = [clm].[object_id]
                     WHERE
-                        [a].[name] = @TableName
-                        AND SCHEMA_NAME([a].[schema_id]) = @SchemaName
-                        AND [b].[column_id] = @ColumnID;
+                        [tbl].[name] = @TableName
+                        AND SCHEMA_NAME([tbl].[schema_id]) = @SchemaName
+                        AND [clm].[column_id] = @ColumnID;
 
                     IF (@Column IS NOT NULL)
                         BEGIN
@@ -74,18 +74,18 @@ BEGIN
             -- Print column headers
             PRINT @ColumnList;
 
-            -- Create a list of columns cast to NVARCHAR(MAX)
+            -- Create tbl list of columns cast to NVARCHAR(MAX)
             DECLARE @ColumnCastList NVARCHAR(MAX) = '';
             SELECT
                 @ColumnCastList = STRING_AGG(
-                    'CAST(' + QUOTENAME([column_name])
-                    + ' AS NVARCHAR(MAX)) + SPACE(GREATEST('
+                    'ISNULL(CAST(' + QUOTENAME([column_name])
+                    + ' AS NVARCHAR(MAX)),'''') + SPACE(GREATEST('
                     + CAST([max_len] AS NVARCHAR(MAX))
                     + ',LEN(QUOTENAME('''
                     + [column_name]
-                    + '''))) - LEN('
+                    + '''))) - ISNULL(LEN('
                     + [column_name]
-                    + '))',
+                    + '),0))',
                     ','
                 ) WITHIN GROUP (ORDER BY [column_id] ASC)
             FROM #column_max_len;
