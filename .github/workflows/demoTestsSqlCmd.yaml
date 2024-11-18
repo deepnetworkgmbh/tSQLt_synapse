@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feature/change-select-statements-to-print
     paths: 
       - "demo/UnitTests/**"
       - ".github/workflows/demoTestsSqlCmd.yaml"
@@ -56,8 +55,7 @@ jobs:
             -ServerInstance "${{ secrets.TARGET_SERVER_URI }}" `
             -Database "${{ secrets.TARGET_DATABASE_NAME }}" `
             -AccessToken "${{ steps.azure_access_token.outputs.azureAccessToken }}" `
-            -InputFile "SampleTests.sql" `
-            -Verbose
+            -InputFile "SampleTests.sql"
         working-directory: ${{ env.WORKING_DIRECTORY }}
         shell: pwsh
 
