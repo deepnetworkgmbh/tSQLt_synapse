@@ -84,7 +84,7 @@ BEGIN
                     + ',LEN(QUOTENAME('''
                     + [column_name]
                     + '''))) - ISNULL(LEN('
-                    + [column_name]
+                    + QUOTENAME([column_name])
                     + '),0))',
                     ','
                 ) WITHIN GROUP (ORDER BY [column_id] ASC)
