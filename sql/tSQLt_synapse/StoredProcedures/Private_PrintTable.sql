@@ -15,6 +15,7 @@ BEGIN
         END
     ELSE
         BEGIN
+            PRINT ('In print');
             IF OBJECT_ID('tempdb..#column_max_len') IS NOT NULL
                 DROP TABLE #column_max_len;
             CREATE TABLE #column_max_len ([column_name] NVARCHAR(4000), [max_len] INT, [column_id] INT);
@@ -95,6 +96,8 @@ BEGIN
             IF OBJECT_ID ('tempdb..#PrintTable') IS NOT NULL
                 TRUNCATE TABLE #PrintTable;
 
+            PRINT ('After truncate');
+
             SET @Command = N'
             SELECT RowText, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS sequence
             INTO #PrintTable
@@ -103,6 +106,7 @@ BEGIN
                 FROM [' + @SchemaName + '].[' + @TableName + ']
             ) t;';
             EXEC [sp_executesql] @Command;
+            PRINT ('Before loop');
 
             -- Loop table and print each row
             DECLARE @rowCounter INT = 1;

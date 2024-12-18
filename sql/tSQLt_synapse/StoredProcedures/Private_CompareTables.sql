@@ -62,6 +62,7 @@ BEGIN
     IF @UnequalRowsExist > 0
         BEGIN
             EXEC [tSQLt_synapse].[Private_PrintTable] @ResultTableSchema, @ResultTable;
+            PRINT('Now drop')
             SET @Cmd = 'DROP TABLE ' + @ResultTableWithSchema + ';'
             EXEC [sp_executesql] @Cmd;
             EXEC [tSQLt_synapse].[Fail] 'There exists unequal rows!';
