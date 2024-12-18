@@ -105,6 +105,7 @@ BEGIN
                 SELECT CONCAT_WS('', '', ' + @ColumnCastList + ') AS RowText
                 FROM [' + @SchemaName + '].[' + @TableName + ']
             ) t;';
+            PRINT (@Command);
             EXEC [sp_executesql] @Command;
             PRINT ('Before loop');
 
