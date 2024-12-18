@@ -25,7 +25,7 @@ BEGIN
                 @MaxLengthString VARCHAR(100),
                 @ColumnID INT,
                 @MaxColumnID INT,
-                @Command NVARCHAR(2000);
+                @Command NVARCHAR(MAX);
 
             SELECT
                 @ColumnID = MIN([clm].[column_id]),
@@ -93,11 +93,18 @@ BEGIN
             PRINT REPLICATE('-', LEN(@ColumnList));
 
             IF OBJECT_ID ('tempdb..#PrintTable') IS NOT NULL
-                TRUNCATE TABLE #PrintTable;
+                DROP TABLE #PrintTable;
+            
+            CREATE TABLE [#PrintTable]
+            (
+                [RowText] [nvarchar](MAX) NOT NULL,
+                [sequence] [int] NOT NULL
+            )
+            WITH (DISTRIBUTION = ROUND_ROBIN, CLUSTERED INDEX ([sequence]));
 
             SET @Command = N'
-            SELECT RowText, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS sequence
-            INTO #PrintTable
+            INSERT INTO #PrintTable
+            SELECT RowText, ROW_NUMBER() OVER(ORDER BY RowText) AS sequence
             FROM (
                 SELECT CONCAT_WS('', '', ' + @ColumnCastList + ') AS RowText
                 FROM [' + @SchemaName + '].[' + @TableName + ']
@@ -111,7 +118,8 @@ BEGIN
             WHILE @rowCounter <= @totalRows
                 BEGIN
                     SET @rowStr = (SELECT [RowText] FROM #PrintTable WHERE [sequence] = @rowCounter);
-                    PRINT @rowStr
+                    PRINT @rowStr;
+                    SET @rowCounter = @rowCounter + 1;
                 END
         END
 END;
