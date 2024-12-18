@@ -15,8 +15,6 @@ BEGIN
         END
     ELSE
         BEGIN
-            BEGIN TRY
-            PRINT ('In print');
             IF OBJECT_ID('tempdb..#column_max_len') IS NOT NULL
                 DROP TABLE #column_max_len;
             CREATE TABLE #column_max_len ([column_name] NVARCHAR(4000), [max_len] INT, [column_id] INT);
@@ -27,7 +25,7 @@ BEGIN
                 @MaxLengthString VARCHAR(100),
                 @ColumnID INT,
                 @MaxColumnID INT,
-                @Command NVARCHAR(2000);
+                @Command NVARCHAR(MAX);
 
             SELECT
                 @ColumnID = MIN([clm].[column_id]),
@@ -104,8 +102,6 @@ BEGIN
             )
             WITH (DISTRIBUTION = ROUND_ROBIN, CLUSTERED INDEX ([sequence]));
 
-            PRINT ('After truncate');
-
             SET @Command = N'
             INSERT INTO #PrintTable
             SELECT RowText, ROW_NUMBER() OVER(ORDER BY RowText) AS sequence
@@ -113,9 +109,7 @@ BEGIN
                 SELECT CONCAT_WS('', '', ' + @ColumnCastList + ') AS RowText
                 FROM [' + @SchemaName + '].[' + @TableName + ']
             ) t;';
-            PRINT (@Command);
             EXEC [sp_executesql] @Command;
-            PRINT ('Before loop');
 
             -- Loop table and print each row
             DECLARE @rowCounter INT = 1;
@@ -127,9 +121,5 @@ BEGIN
                     PRINT @rowStr;
                     SET @rowCounter = @rowCounter + 1;
                 END
-            END TRY
-            BEGIN CATCH
-                PRINT(ERROR_MESSAGE())
-            END CATCH
         END
 END;
