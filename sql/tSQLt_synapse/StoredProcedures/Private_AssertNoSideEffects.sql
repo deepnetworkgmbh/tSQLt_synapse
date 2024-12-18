@@ -34,7 +34,7 @@ BEGIN
                         ' ObjectName: ',
                         [ObjectName],
                         ' ObjectType: ',
-                        [ObjectType]
+                        [ObjectType] COLLATE database_default
                     ),
                     CHAR(13)
                 )
