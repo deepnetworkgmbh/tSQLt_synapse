@@ -15,6 +15,7 @@ BEGIN
         END
     ELSE
         BEGIN
+            BEGIN TRY
             PRINT ('In print');
             IF OBJECT_ID('tempdb..#column_max_len') IS NOT NULL
                 DROP TABLE #column_max_len;
@@ -118,5 +119,9 @@ BEGIN
                     SET @rowStr = (SELECT [RowText] FROM #PrintTable WHERE [sequence] = @rowCounter);
                     PRINT @rowStr
                 END
+            END TRY
+            BEGIN CATCH
+                PRINT(ERROR_MESSAGE())
+            END CATCH
         END
 END;
