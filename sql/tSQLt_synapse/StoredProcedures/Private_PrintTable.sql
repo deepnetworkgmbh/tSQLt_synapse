@@ -95,12 +95,12 @@ BEGIN
             PRINT REPLICATE('-', LEN(@ColumnList));
 
             IF OBJECT_ID ('tempdb..#PrintTable') IS NOT NULL
-                TRUNCATE TABLE #PrintTable;
+                DROP TABLE #PrintTable;
 
             PRINT ('After truncate');
 
             SET @Command = N'
-            SELECT RowText, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS sequence
+            SELECT RowText, ROW_NUMBER() OVER(ORDER BY RowText) AS sequence
             INTO #PrintTable
             FROM (
                 SELECT CONCAT_WS('', '', ' + @ColumnCastList + ') AS RowText
@@ -117,7 +117,8 @@ BEGIN
             WHILE @rowCounter <= @totalRows
                 BEGIN
                     SET @rowStr = (SELECT [RowText] FROM #PrintTable WHERE [sequence] = @rowCounter);
-                    PRINT @rowStr
+                    PRINT @rowStr;
+                    SET @rowCounter = @rowCounter + 1;
                 END
             END TRY
             BEGIN CATCH
