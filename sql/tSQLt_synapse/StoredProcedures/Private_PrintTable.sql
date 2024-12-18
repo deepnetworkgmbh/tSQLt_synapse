@@ -96,12 +96,19 @@ BEGIN
 
             IF OBJECT_ID ('tempdb..#PrintTable') IS NOT NULL
                 DROP TABLE #PrintTable;
+            
+            CREATE TABLE [#PrintTable]
+            (
+                [RowText] [nvarchar](MAX) NOT NULL,
+                [sequence] [int] NOT NULL
+            )
+            WITH (DISTRIBUTION = ROUND_ROBIN, CLUSTERED INDEX ([sequence]));
 
             PRINT ('After truncate');
 
             SET @Command = N'
+            INSERT INTO #PrintTable
             SELECT RowText, ROW_NUMBER() OVER(ORDER BY RowText) AS sequence
-            INTO #PrintTable
             FROM (
                 SELECT CONCAT_WS('', '', ' + @ColumnCastList + ') AS RowText
                 FROM [' + @SchemaName + '].[' + @TableName + ']
