@@ -92,16 +92,26 @@ BEGIN
 
             PRINT REPLICATE('-', LEN(@ColumnList));
 
+            IF OBJECT_ID ('tempdb..#PrintTable') IS NOT NULL
+                TRUNCATE TABLE #PrintTable;
+
             SET @Command = N'
-            DECLARE @Output NVARCHAR(MAX);
-            SELECT @Output = STRING_AGG(RowText, CHAR(10))
+            SELECT RowText, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS sequence
+            INTO #PrintTable
             FROM (
                 SELECT CONCAT_WS('', '', ' + @ColumnCastList + ') AS RowText
                 FROM [' + @SchemaName + '].[' + @TableName + ']
-            ) t;
-            PRINT @Output;';
-
-            -- Execute the dynamic SQL
+            ) t;';
             EXEC [sp_executesql] @Command;
+
+            -- Loop table and print each row
+            DECLARE @rowCounter INT = 1;
+            DECLARE @totalRows INT = (SELECT COUNT(*) FROM #PrintTable);
+            DECLARE @rowStr NVARCHAR(MAX);
+            WHILE @rowCounter <= @totalRows
+                BEGIN
+                    SET @rowStr = (SELECT [RowText] FROM #PrintTable WHERE [sequence] = @rowCounter);
+                    PRINT @rowStr
+                END
         END
 END;
