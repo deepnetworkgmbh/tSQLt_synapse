@@ -34,7 +34,7 @@ BEGIN
                         ' ObjectName: ',
                         [ObjectName],
                         ' ObjectType: ',
-                        [ObjectType] COLLATE SQL_LATIN1_GENERAL_CP1_CI_AS
+                        [ObjectType]
                     ),
                     CHAR(13)
                 )
