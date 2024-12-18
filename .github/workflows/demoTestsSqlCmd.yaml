@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      -fix/print_table_limit
+      - fix/print_table_limit
     paths: 
       - "demo/UnitTests/**"
       - ".github/workflows/demoTestsSqlCmd.yaml"
